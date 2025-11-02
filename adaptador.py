@@ -3,13 +3,15 @@ from bs4 import BeautifulSoup
 import google.generativeai as genai
 import os
 import time
+from dotenv import load_dotenv
 
+load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 
 
 ####################################################
-### SEÇÃO 1: FUNÇÕES DE PERFIL DE ACESSIBILIDADE
+### SEÇÃO 1: FUNÇÃO DE CORREÇÃO BASE
 ####################################################
 
 def aplicar_correcoes_base(soup):
@@ -27,12 +29,18 @@ def aplicar_correcoes_base(soup):
         
     return soup
 
+
+####################################################
+### SEÇÃO 2: FUNÇÕES DE PERFIL DE ACESSIBILIDADE
+####################################################
+
 def aplicar_perfil_cego(soup):
     """Corrige problemas de navegação e alt text para leitores de tela."""
     print("Aplicando Perfil Cego...")
     
-    # corrigir imagens sem 'alt'
+    soup = aplicar_correcoes_base(soup)
 
+    # corrigir imagens sem 'alt'
     api_call_count = 0
     for img in soup.find_all('img'):
         if not img.get('alt'): # Se não tiver 'alt'
@@ -60,24 +68,23 @@ def aplicar_perfil_cego(soup):
             placeholder = input_tag.get('placeholder')
             input_tag['aria-label'] = placeholder
             print(f"Corrigido: aria-label='{placeholder}'")
-            
-    # corrigir outline
-    style_tag = soup.find('style')
-    if style_tag and 'outline: none' in style_tag.string:
-        style_tag.decompose()
-        print("Corrigido: CSS do Outline removido")
     
     return soup
 
 def aplicar_perfil_dislexia(soup):
     """Muda fonte e simplifica texto para dificuldade cognitiva."""
     print("Aplicando Perfil Dislexia...")
+    
+    soup = aplicar_correcoes_base(soup)
 
     # mudar a fonte
     head = soup.find('head')
     if head:
         new_style = soup.new_tag('style')
         new_style.string = """
+        html { 
+            font-size: 140% !important; 
+        }
         body { 
             font-family: 'Verdana', sans-serif !important; 
             line-height: 1.6 !important; 
@@ -98,6 +105,8 @@ def aplicar_perfil_dislexia(soup):
 def aplicar_perfil_alto_contraste(soup):
     """Aplica um CSS de Alto Contraste (Modo Escuro) para baixa visão."""
     print("Aplicando Perfil Alto Contraste...")
+    
+    soup = aplicar_correcoes_base(soup)
     
     head = soup.find('head')
     if head:
@@ -138,6 +147,8 @@ def aplicar_perfil_alto_contraste(soup):
 def aplicar_perfil_surdo(soup):
     """Procura por tags <video> e injeta uma transcrição de texto abaixo delas."""
     print("Aplicando Perfil Surdo (Transcrição de Áudio)...")
+
+    soup = aplicar_correcoes_base(soup)
     
     for video_tag in soup.find_all('video'):
         source_tag = video_tag.find('source')
@@ -171,6 +182,8 @@ def aplicar_perfil_narracao_cegos(soup):
     """Procura por <video> e injeta uma DESCRIÇÃO VISUAL (audiodescrição)."""
     print("Aplicando Perfil Narração para Cegos (Audio Description)...")
     
+    soup = aplicar_correcoes_base(soup)
+    
     for video_tag in soup.find_all('video'):
         source_tag = video_tag.find('source')
         if source_tag and source_tag.get('src'):
@@ -202,7 +215,6 @@ def aplicar_perfil_narracao_cegos(soup):
 def aplicar_perfil_visao_limitada(soup, tipo_necessidade):
     """
     Aplica filtros de CSS baseados na necessidade do usuário (Tamanho ou Daltonismo).
-    (Versão corrigida para 'aumentar_texto')
     """
     print(f"Aplicando Perfil Visão Limitada: {tipo_necessidade}")
     
@@ -249,7 +261,7 @@ def aplicar_perfil_visao_limitada(soup, tipo_necessidade):
 
 
 ####################################################
-### SEÇÃO 2: FUNÇÕES DE IA
+### SEÇÃO 3: FUNÇÕES DE IA
 ####################################################
 
 def get_alt_text_from_ai(image_url):
@@ -368,7 +380,7 @@ def get_visual_description_from_ai(video_url):
 
 
 ####################################################
-### SEÇÃO 3: EXECUÇÃO PRINCIPAL
+### SEÇÃO 4: EXECUÇÃO PRINCIPAL
 ####################################################
 
 if __name__ == "__main__":
@@ -382,7 +394,7 @@ if __name__ == "__main__":
         print("\n!!! ERRO CRÍTICO !!!")
         print("O arquivo 'antes.html' não foi encontrado.")
         print("Certifique-se que ele está na mesma pasta que o adaptador.py")
-        print("Lembre-se que 'antes.html' deve conter o <video> e o pop-up que adicionamos.\n")
+        print("Lembre-se que 'antes.html' deve conter o <video>.\n")
         exit()
 
     # roda o perfil 1 (cego)

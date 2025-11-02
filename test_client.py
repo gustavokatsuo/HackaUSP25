@@ -2,7 +2,7 @@ import requests
 import json
 
 # CONFIGURAÇÃO DO TESTE
-PERFIL_PARA_TESTAR = "cego" # mude aqui! ex: "dislexia", "surdo", "alto_contraste"
+PERFIL_PARA_TESTAR = "alto_contraste" # mude aqui! ex: "dislexia", "surdo", "alto_contraste"
 
 def testar_servidor():
     print(f"--- Testando o Perfil: {PERFIL_PARA_TESTAR} ---")
