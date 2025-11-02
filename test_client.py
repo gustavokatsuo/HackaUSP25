@@ -6,7 +6,7 @@ import time
 # --- CONFIGURAÇÃO DO TESTE (MUDE APENAS ESTAS TRÊS LINHAS) ---
 
 # PERFIL (profile): Deve ser 'visual', 'auditivo', 'cognitivo', ou 'narracao_cegos'
-PERFIL_PARA_TESTAR = "cognitivo" 
+PERFIL_PARA_TESTAR = "visual" 
 
 # CONFIG (config): Dicionário com as opções ativadas
 # EX: Para aumentar a fonte E corrigir o daltonismo protanopia
@@ -19,9 +19,9 @@ CONFIG_PARA_TESTAR = {
     # Opções Auditivas/Cognitivas (devem ser False se o perfil for 'visual')
     "transcricao_surdez": False,
     "desativar_autoplay": False,
-    "simplificar_texto": True,
-    "barra_progresso": True,
-    "destaque_botoes": True,
+    "simplificar_texto": False,
+    "barra_progresso": False,
+    "destaque_botoes": False,
     "cores_neutras": True
 }
 
