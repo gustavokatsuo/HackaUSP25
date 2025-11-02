@@ -26,7 +26,6 @@ def aplicar_correcoes_base(soup):
     (Corrige o 'outline' de foco).
     """
     style_tag = soup.find('style')
-    # Removemos o bloco de estilo que desativa o outline de foco
     if style_tag and 'outline: none' in style_tag.string:
         style_tag.decompose() 
     return soup
@@ -40,38 +39,40 @@ def modulo_aplicar_estilos_base(soup, new_styles):
         head.append(new_style_tag)
     return soup
 
+# Funções de IA simplificadas para foco na lógica.
+
 def get_alt_text_from_ai(image_url):
-    """Gera Alt Text (descrição da imagem) usando o Gemini."""
     try:
-        response = genai.GenerativeModel('gemini-2.5-flash').generate_content(
+        response = genai.GenerativeModel('models/gemini-2.5-pro').generate_content(
             [f"Descreva esta imagem para uma pessoa cega, de forma concisa e útil, para ser usada como alt text. Responda APENAS com a descrição, sem introdução ou frase final.", image_url]
         )
         return response.text.strip()
     except Exception as e:
-        print(f"Erro ao gerar alt text: {e}")
         return "Descrição gerada por IA falhou."
     
 def get_simplified_text_from_ai(text):
-    """Simplifica um bloco de texto usando o Gemini."""
     try:
         prompt = f"Simplifique o seguinte texto para o nível de leitura de uma criança, mantendo o significado principal. Responda APENAS com o texto simplificado. Texto original: '{text}'"
-        response = genai.GenerativeModel('gemini-2.5-flash').generate_content(prompt)
+        response = genai.GenerativeModel('models/gemini-2.5-flash').generate_content(prompt)
         return response.text.strip()
     except Exception as e:
-        print(f"Erro ao simplificar texto: {e}")
         return "Simplificação gerada por IA falhou."
 
 def get_video_transcript_from_ai(video_source):
-    """Gera uma transcrição simples para um vídeo."""
     try:
-        # Nota: O Gemini 2.5 Pro é usado para maior precisão em tarefas mais complexas.
         prompt = f"Gere uma transcrição concisa (máx 3 frases) deste vídeo para acessibilidade. Responda APENAS com a transcrição. URL: {video_source}"
-        response = genai.GenerativeModel('gemini-2.5-pro').generate_content(prompt)
+        response = genai.GenerativeModel('models/gemini-2.5-pro').generate_content(prompt)
         return response.text.strip()
     except Exception as e:
-        print(f"Erro ao gerar transcrição: {e}")
         return "Transcrição gerada por IA falhou."
 
+def get_visual_description_from_ai(video_url):
+    try:
+        prompt = "Você é um narrador de audiodescrição para uma pessoa cega. Descreva as informações visuais que não são óbvias pelo som. APENAS a descrição em português."
+        response = genai.GenerativeModel('models/gemini-2.5-pro').generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        return "Descrição visual do vídeo da IA falhou."
 
 ####################################################
 ### SEÇÃO 2: FUNÇÕES DE PERFIL FINAL E MODULAR
@@ -84,31 +85,52 @@ def aplicar_perfil_visual(soup, config):
     """
     
     # 1. ESTILOS BASE (CSS)
+    print(f"--- INICIANDO PERFIL VISUAL (MODULAR) ---")
+    soup = aplicar_correcoes_base(soup)
+    head = soup.find('head')
+    if not head: return soup
+
     new_styles = ""
     
-    # A. Aumentar Escala (Baixa Visão)
+    # A. Aumentar Escala (Baixa Visão) - Ajustado para ser visível
     escala = config.get("aumentar_escala")
-    if escala == "moderada":
-        new_styles += "body { font-size: 160% !important; line-height: 1.6 !important; }\n"
-        print("Módulo: Baixa Visão (Moderada) aplicado.")
-    elif escala == "grave":
-        new_styles += "body { font-size: 190% !important; line-height: 1.8 !important; letter-spacing: 0.05em; }\n"
-        print("Módulo: Baixa Visão (Grave) aplicado.")
+    ESCALAS = {"leve": "135%", "moderada": "160%", "severa": "190%"}
+    if escala in ESCALAS:
+        tamanho_escala = ESCALAS[escala]
+        # Aplica o aumento na fonte raiz para escalar tudo
+        new_styles += f"html {{ font-size: {tamanho_escala} !important; }}"
+        print(f"Módulo: Baixa Visão (Escala {escala}) aplicado.")
 
-    # B. Daltonismo e Hipersensibilidade (Filtros CSS)
+    # B. Ajustes de Cores (Daltonismo ou Hipersensibilidade)
     daltonismo_tipo = config.get("daltonismo_tipo")
-    if daltonismo_tipo == "protanopia":
-        # Nota: Filtros de daltonismo exigem injeção de SVG na tag <body> ou <svg> na página,
-        # mas aqui simplificamos com um filtro de matiz para demonstração.
-        new_styles += "body { filter: hue-rotate(180deg); }\n"
-        print("Módulo: Daltonismo (Protanopia) aplicado.")
-    elif daltonismo_tipo == "deuteranopia":
-        new_styles += "body { filter: hue-rotate(90deg); }\n"
-        print("Módulo: Daltonismo (Deuteranopia) aplicado.")
-    elif config.get("sensibilidade_luz"):
-        new_styles += "body { background-color: #222 !important; color: #EEE !important; filter: invert(0.8); }\n"
-        print("Módulo: Hipersensibilidade/Luz aplicado.")
+    
+    # --- CORREÇÃO SOLICITADA: NEUTRALIZAÇÃO EXTREMA DE CORES/BRILHO ---
+    if config.get("hipersensibilidade_visual"):
+        # 1. Neutralização do Fundo e Cores (Filtro Monocromático de Baixa Luminosidade)
+        new_styles += """
+            body { 
+                /* Força o fundo para preto neutro e sobrescreve o azul vibrante */
+                background-color: #111111 !important; 
+                color: #EEEEEE !important;
+                /* Filtro extremo: Remove toda a cor e reduz o brilho */
+                filter: grayscale(100%) brightness(0.85) contrast(1.1); 
+                background-image: none !important; 
+            }
+            /* Remove as sombras e animações (ruído visual) */
+            .card { box-shadow: none !important; }
+            *, ::before, ::after { transition-property: none !important; animation: none !important; }
+            
+            /* Reintrodução de Foco Acessível (Branco sobre Preto) */
+            .btn-primary, .btn-success { background-color: #555 !important; border: 3px solid #00FFFF !important; color: white !important; }
+        """
+        print("Módulo: Hipersensibilidade Visual (Neutralização Extrema) ativado.")
 
+    # C. Daltonismo (Se não houver hipersensibilidade ativa)
+    elif daltonismo_tipo == "protanopia":
+        new_styles += ".btn-primary, .btn-success { background-color: #000080 !important; border-color: #000080 !important; color: white !important; }"
+        new_styles += "body { filter: hue-rotate(180deg); }"
+        print("Módulo: Daltonismo (Protanopia) aplicado.")
+    
     # Injeta estilos no <head>
     if new_styles:
         soup = modulo_aplicar_estilos_base(soup, new_styles)
@@ -125,32 +147,6 @@ def aplicar_perfil_visual(soup, config):
         print("Módulo: Alt Text (Cegueira Total) aplicado.")
 
     return soup
-
-    # 4. HIPERSENSIBILIDADE VISUAL / CORES NEUTRAS E ANIMAÇÕES (A VERSÃO EXTRAORDINÁRIA)
-    if config.get("hipersensibilidade_visual"):
-        
-        # A. Reduzir cores vibrantes (MONOCROMÁTICO + BRILHO)
-        styles += """
-            body { 
-                /* O filtro mais forte: Remove a saturação total e aumenta o contraste/brilho */
-                filter: grayscale(100%) brightness(1.2) contrast(1.1); 
-                background-image: none !important; /* Limpa o fundo */
-            }
-        """
-        
-        # B. Desativar Animações (Foco/Hipersensibilidade)
-        styles += """
-            *, ::before, ::after {
-                transition-property: none !important;
-                animation: none !important;
-                /* Remove sombras e degradês que causam ruído visual */
-                box-shadow: none !important; 
-            }
-        """
-        # C. Reintrodução de Cor Acessível (Brilho nos botões)
-        styles += ".btn-primary, .btn-success { filter: none !important; border: 3px solid #0000FF !important; }"
-        
-        print("Módulo: Hipersensibilidade Visual (Monocromático Extremo/Sem Animação) ativado.")
 
 def aplicar_perfil_auditivo(soup, config):
     """
@@ -199,7 +195,6 @@ def aplicar_perfil_cognitivo(soup, config):
 
     # 1. SIMPLIFICAÇÃO DE TEXTO (Dislexia)
     if config.get("simplificar_texto"):
-        # Encontra o parágrafo principal do Hero Section para simplificação
         hero_section = soup.find('div', class_='col-lg-6')
         if hero_section:
             lead_paragraph = hero_section.find('p', class_='lead')
@@ -216,7 +211,6 @@ def aplicar_perfil_cognitivo(soup, config):
 
 
     # 2. BARRA DE PROGRESSO (TDAH / Orientação) - CORREÇÃO FINAL
-    # *AVISO*: Injetamos apenas o HTML estático para evitar falhas de parsing do JavaScript.
     if config.get("barra_progresso"):
         body = soup.find('body')
         if body:
@@ -231,7 +225,7 @@ def aplicar_perfil_cognitivo(soup, config):
             progress_bar_soup = BeautifulSoup(progress_bar_html, 'html.parser').find('div')
             body.insert(0, progress_bar_soup)
             
-            print("Módulo: Barra de progresso estática adicionada (Não animada, mas não quebra o HTML).")
+            print("Módulo: Barra de progresso estática adicionada.")
 
     # 3. DESTAQUE DE BOTÕES (Hipersensibilidade Sensorial / Foco)
     if config.get("destaque_botoes"):
@@ -255,7 +249,6 @@ def handle_adaptation():
         perfil = data.get("profile")
         config = data.get("config", {}) 
         
-        # O HTML bruto está sendo enviado pelo cliente no campo 'html_content'
         html_quebrado = data.get("html_content") 
 
         if not html_quebrado:
@@ -273,7 +266,7 @@ def handle_adaptation():
             print(f"--- INICIANDO PERFIL VISUAL (MODULAR) ---")
         elif perfil == "auditivo":
             soup_corrigido = aplicar_perfil_auditivo(soup, config)
-            print(f"--- INICIANDO PERFIL AUDITIVO (MODULAR) ---")
+            print(f"--- INICIANDO PERFIL AUDITIVO (MODULAR) ---\n")
         elif perfil == "cognitivo":
             soup_corrigido = aplicar_perfil_cognitivo(soup, config)
             print(f"--- INICIANDO PERFIL COGNITIVO (MODULAR) ---")
@@ -288,7 +281,6 @@ def handle_adaptation():
     except Exception as e:
         # Imprime o erro no console do Flask para diagnóstico
         print(f"ERRO 500 - FALHA GERAL NO PROCESSAMENTO: {e}")
-        # Retorna uma mensagem de erro para o cliente
         return jsonify({"erro": f"Erro interno do servidor: {e}"}), 500
 
 
@@ -298,5 +290,4 @@ def handle_adaptation():
 
 if __name__ == "__main__":
     print(f"Iniciando o servidor Flask em http://127.0.0.1:5000")
-    # debug=True é essencial para recarregar o servidor automaticamente
     app.run(debug=True)

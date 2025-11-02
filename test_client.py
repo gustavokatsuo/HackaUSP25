@@ -57,36 +57,35 @@ def rodar_teste(perfil_nome, perfil_id, config_data):
         print("\n--- ERRO CRÍTICO: SERVIDOR OFF-LINE ---")
         print(f"Servidor Flask não encontrado em {URL_SERVIDOR}. Você rodou 'python3 app.py' no Terminal 1?")
     except Exception as e:
-        print(f"\n--- ERRO INESPERADO ---")
-        print(e)
+        print(f"\n--- ERRO INESPERADO ---\n{e}")
 
 
 def main():
-    """Define e executa todos os casos de teste."""
+    """Define e executa o teste de combinação solicitada."""
     
     TESTES = [
-        # TESTE 1: PERFIL VISUAL (Aumentar Escala + Cores Neutras)
+        # TESTE SOLICITADO: Combinação de Baixa Visão (Escala) e Hipersensibilidade (Cores Neutras/Brilho)
         {
-            "nome": "VISUAL_Escala_e_Neutras", 
+            "nome": "VISUAL_Escala_e_Neutras_Severas", 
             "id": "visual", 
             "config": {
-                "aumentar_escala": "moderada", # 140%
+                "aumentar_escala": "moderada", # Aumento de fonte visível
                 "daltonismo_tipo": None,
                 "cegueira_total": False,
                 "sensibilidade_luz": False,
-                "hipersensibilidade_visual": True # Ativa o filtro cinza/suave
+                "hipersensibilidade_visual": True # Ativa o filtro monocromático/baixo brilho
             }
         },
         
-        # TESTE 2: PERFIL COGNITIVO (Barra de Progresso)
+        # TESTE DE CONTROLE: COGNITIVO (Para garantir que o módulo da barra não quebra)
         {
-            "nome": "COGNITIVO_Barra_e_Foco", 
+            "nome": "COGNITIVO_Foco_e_Barra_Estática", 
             "id": "cognitivo", 
             "config": {
-                "simplificar_texto": False,
-                "barra_progresso": True, # A barra estática
-                "destaque_botoes": True, # Destaque dos botões
-                "diminuir_espacamento": False
+                "simplificar_texto": True,
+                "barra_progresso": True,
+                "destaque_botoes": True,
+                "diminuir_espacamento": True
             }
         },
     ]
@@ -98,6 +97,6 @@ def main():
 
 if __name__ == "__main__":
     print("\n=========================================")
-    print("INICIANDO SUITE DE TESTES MODULARES")
+    print("INICIANDO SUITE DE TESTES MODULARES (DEMO)")
     print("=========================================")
     main()
