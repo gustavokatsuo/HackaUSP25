@@ -11,7 +11,7 @@ PERFIL_PARA_TESTAR = "cognitivo"
 # CONFIG (config): Dicionário com as opções ativadas
 # EX: Para aumentar a fonte E corrigir o daltonismo protanopia
 CONFIG_PARA_TESTAR = {
-    "aumentar_escala": False,           # Baixa Visão
+    "aumentar_escala": "moderada",           # Baixa Visão, "leve", "moderada", "severa"
     "daltonismo_tipo": None,   # Daltonismo (opções: "protanopia" ou "deuteranopia")
     "cegueira_total": False,            # Cegueira Total (Alt-Text/Navegação)
     "sensibilidade_luz": False,        # Sensibilidade (Filtro Sépia)

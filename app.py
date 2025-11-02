@@ -54,10 +54,19 @@ def aplicar_perfil_visual(soup, config):
 
     styles = ""
 
-    # 1. BAIXA VISÃO / AUMENTAR ESCALA
-    if config.get("aumentar_escala"):
-        styles += "html { font-size: 140% !important; }"
-        print("Módulo: Escala ativado.")
+    ESCALAS = {
+        "leve": "120%",     # Aumento de 20%
+        "moderada": "140%", # Aumento de 40%
+        "severa": "165%",   # Aumento de 65%
+    }
+
+    # 1. BAIXA VISÃO / AUMENTAR ESCALA (Agora com 3 níveis)
+    escala_nivel = config.get("aumentar_escala")
+    
+    if escala_nivel in ESCALAS:
+        tamanho_escala = ESCALAS[escala_nivel]
+        styles += f"html {{ font-size: {tamanho_escala} !important; }}"
+        print(f"Módulo: Escala '{escala_nivel}' ({tamanho_escala}) ativado.")
         
     # 2. SENSIBILIDADE À LUZ / FILTRO
     if config.get("sensibilidade_luz"):
