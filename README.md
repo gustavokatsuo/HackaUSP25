@@ -15,7 +15,7 @@ Nossa solução é baseada em um **"Formulário de Perfil"** que entende a neces
 
 Em vez de uma solução "tamanho único", nós entregamos acessibilidade sob demanda.
 
-## 3. O Protótipo: Um Serviço de IA Funcional (Viabilidade Técnica - Peso 2)
+## 3. O Protótipo: Um Serviço de IA Funcional (Viabilidade Técnica)
 Para provar a viabilidade da nossa solução, construímos o protótipo do nosso back-end: um **servidor Flask (`app.py`)** que expõe uma API RESTful.
 
 Este servidor usa Python, BeautifulSoup e os modelos multimodais (Texto, Imagem e Áudio) do Google Gemini para:
@@ -70,8 +70,8 @@ python3 app.py
 * Este script simula a "Extensão do Navegador" fazendo um pedido à nossa API.
 python3 test_client.py
 
-* O script irá chamar o servidor e gerar um arquivo `resultado_do_servidor_cego.html`.
-* Para testar outros perfis, edite a variável `PERFIL_PARA_TESTAR` no topo do `test_client.py` e rode-o novamente.
+* O script irá chamar o servidor e gerar dois arquivos html.
+* Para testar outros perfis, editas as variáveis no `test_client.py` e rode-o novamente.
 
 ## 5. Próximos Passos (Modelo de Negócio)
 * **Parte 1:** Construir a "Parte 1" (formulário) que consome esta API.
