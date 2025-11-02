@@ -1,4 +1,4 @@
-# A11y-Adapt: O Adaptador de Acessibilidade por IA
+# A11y-Adapt - Adaptador de Acessibilidade por IA
 ### Hackathon USP 2025
 
 **Tema:** Tecnologias inovadoras para acessibilidade e inclusão digital.
@@ -74,7 +74,7 @@ python3 test_client.py
 * Para testar outros perfis, edite a variável `PERFIL_PARA_TESTAR` no topo do `test_client.py` e rode-o novamente.
 
 ## 5. Próximos Passos (Modelo de Negócio - Peso 1)
-* **Parte 1:** Construir a "Parte 1" (a extensão de navegador em JavaScript) que consome esta API.
+* **Parte 1:** Construir a "Parte 1" (formulário) que consome esta API.
 * **Modelo B2C:** Uma extensão Freemium (ex: 3 perfis grátis, todos por R$ 5/mês).
 * **Modelo B2B:** Um serviço de assinatura para empresas (um "selo A11y-Adapt") que adapta o site da empresa *antes* de enviá-lo ao usuário, garantindo conformidade com a lei de acessibilidade.
 
