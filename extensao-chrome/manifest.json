@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "A11y-Adapt (Hackathon USP)",
+  "version": "1.0",
+  "description": "Adapta a web com perfis de acessibilidade personalizados via IA.",
+  
+  "permissions": [
+    "storage",
+    "scripting" 
+  ],
+  
+  "host_permissions": [
+    "http://127.0.0.1:5000/*",
+    "<all_urls>" 
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png" 
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_script.js"],
+      "run_at": "document_start" 
+    }
+  ]
+}

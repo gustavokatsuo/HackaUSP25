@@ -86,3 +86,6 @@ python3 test_client.py
 * `captions.vtt`: O arquivo de legendas do `index.html`.
 * `requirements.txt`: As dependências do Python.
 * `.gitignore`: Protege nossa `venv` e chaves de API.
+
+
+adicionei o testa-tudo.py (autoexplicativo) obs: cansado

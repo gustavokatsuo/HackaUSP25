@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>A11y-Adapt</title>
+    <style>
+        body { width: 300px; font-family: sans-serif; }
+        div { margin-bottom: 10px; }
+        h3 { margin-top: 0; }
+        label { display: block; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <h3>Escolha seu Perfil de Acessibilidade</h3>
+    
+    <div>
+        <input type="radio" name="perfil" id="cego" value="cego">
+        <label for="cego">Perfil Cego (Alt Text + Navegação)</label>
+    </div>
+    <div>
+        <input type="radio" name="perfil" id="dislexia" value="dislexia">
+        <label for="dislexia">Perfil Dislexia (Fonte + Texto Simples)</label>
+    </div>
+    <div>
+        <input type="radio" name="perfil" id="alto_contraste" value="alto_contraste">
+        <label for="alto_contraste">Perfil Alto Contraste</label>
+    </div>
+    <div>
+        <input type="radio" name="perfil" id="surdo" value="surdo">
+        <label for="surdo">Perfil Surdo (Transcrição)</label>
+    </div>
+    <div>
+        <input type="radio" name="perfil" id="narracao_cegos" value="narracao_cegos">
+        <label for="narracao_cegos">Perfil Narração (Cegos)</label>
+    </div>
+    
+    <hr>
+    
+    <button id="salvar">Salvar e Recarregar Página</button>
+    <button id="limpar">Limpar Perfil</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>

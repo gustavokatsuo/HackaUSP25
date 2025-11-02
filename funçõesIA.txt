@@ -23,9 +23,13 @@ def aplicar_correcoes_base(soup):
     Aplica correções universais.
     (Corrige o 'outline' de foco).
     """
+    print("Aplicando correções de base...")
+    
     style_tag = soup.find('style')
     if style_tag and 'outline: none' in style_tag.string:
         style_tag.decompose() 
+        print("Corrigido (Base): CSS do Outline removido.")
+        
     return soup
 
 def modulo_aplicar_estilos_base(soup, new_styles):
@@ -45,7 +49,7 @@ def modulo_aplicar_estilos_base(soup, new_styles):
 def aplicar_perfil_visual(soup, config):
     """
     PERFIL VISUAL (Configuração Modular)
-    Implementa: Baixa Visão, Cegueira Total, Daltonismo, Hipersensibilidade Visual (Cores e Animações).
+    Implementa: Baixa Visão, Cegueira Total, Daltonismo e Sensibilidade à Luz.
     """
     print(f"--- INICIANDO PERFIL VISUAL (MODULAR) ---")
     soup = aplicar_correcoes_base(soup)
@@ -54,7 +58,7 @@ def aplicar_perfil_visual(soup, config):
 
     styles = ""
 
-    # 1. BAIXA VISÃO / AUMENTAR ESCALA
+    # 1. BAJA VISÃO / AUMENTAR ESCALA
     if config.get("aumentar_escala"):
         styles += "html { font-size: 140% !important; }"
         print("Módulo: Escala ativado.")
@@ -63,38 +67,22 @@ def aplicar_perfil_visual(soup, config):
     if config.get("sensibilidade_luz"):
         styles += "body { filter: sepia(0.2) saturate(0.8) !important; }"
         print("Módulo: Filtro de Luz (Sépia) ativado.")
-
+        
     # 3. DALTONISMO / MUDAR DE COR
     daltonismo_tipo = config.get("daltonismo_tipo")
     if daltonismo_tipo == "protanopia":
         styles += ".btn-success { background-color: #FFA500 !important; border-color: #FFA500 !important; }"
-        # Adicione esta linha para corrigir o botão Laranja também:
-        styles += ".btn-primary { background-color: #000080 !important; border-color: #000080 !important; }" # Muda o laranja para azul marinho
-    
+        print("Módulo: Protanopia ativado.")
     elif daltonismo_tipo == "deuteranopia":
         styles += ".btn-success { background-color: #FFFF00 !important; border-color: #FFFF00 !important; color: #000 !important; }"
-        # Adicione esta linha para corrigir o botão Laranja também:
-        styles += ".btn-primary { background-color: #000080 !important; border-color: #000080 !important; }" # Muda o laranja para azul marinho
-        
-    # 4. HIPERSENSIBILIDADE VISUAL / CORES NEUTRAS E ANIMAÇÕES
-    if config.get("hipersensibilidade_visual"):
-        # A. Reduzir cores vibrantes
-        styles += "body { filter: grayscale(0.5) brightness(1.1) !important; background-image: none !important; }" 
-        # B. Desativar Animações (Foco/Hipersensibilidade)
-        styles += """
-            *, ::before, ::after {
-                transition-property: none !important;
-                animation: none !important;
-            }
-        """
-        print("Módulo: Hipersensibilidade Visual (Neutras/Animações) ativado.")
+        print("Módulo: Deuteranopia ativado.")
     
     # Injeta os estilos CSS coletados
     if styles:
         modulo_aplicar_estilos_base(soup, styles)
 
 
-    # 5. CEGUEIRA TOTAL / ALT-TEXT E NAVEGAÇÃO (IA)
+    # 4. CEGUEIRA TOTAL / ALT-TEXT E NAVEGAÇÃO (IA)
     if config.get("cegueira_total"):
         print("Módulo: Correções estruturais para Leitores de Tela ativadas.")
         
@@ -135,7 +123,6 @@ def aplicar_perfil_auditivo(soup, config):
                 video_url = source_tag.get('src')
                 transcription_text = get_transcription_from_ai(video_url)
                 
-                # Usa BeautifulSoup para criar o bloco de transcrição com segurança
                 transcription_div = soup.new_tag('div', **{'class': 'alert alert-info mt-2', 'role': 'status'})
                 transcription_div.append(BeautifulSoup(f"<p class='fw-bold'>Transcrição (IA):</p><p>{transcription_text}</p>", 'html.parser'))
                 
@@ -149,13 +136,12 @@ def aplicar_perfil_auditivo(soup, config):
             video_tag['autoplay'] = 'false'
             video_tag['muted'] = 'true'
         print("Módulo: Autoplay desativado.")
-
+        
     return soup
 
 def aplicar_perfil_cognitivo(soup, config):
     """
-    CONDIÇÃO: COGNITIVO (TDAH, Seniores, Dislexia, Foco, Ordem).
-    Implementa: Simplificação de Texto, Barra de Progresso, Destaque, Redução de Animações.
+    CONDIÇÃO: COGNITIVO (TDAH, Seniores, Dislexia, Hipersensibilidade, Cognição).
     """
     print("--- INICIANDO PERFIL COGNITIVO (MODULAR) ---")
     soup = aplicar_correcoes_base(soup)
@@ -165,81 +151,27 @@ def aplicar_perfil_cognitivo(soup, config):
     # 1. SIMPLIFICAÇÃO DE TEXTO (IA)
     if config.get("simplificar_texto"):
         paragrafo = soup.find('p', class_='lead')
-        if paragrafo:
-            texto_original = paragrafo.text.strip() 
-            if texto_original:
-                paragrafo.string = get_simplified_text_from_ai(texto_original)
-                print("Módulo: Texto simplificado (IA) ativado.")
-            else:
-                print("Aviso: Parágrafo principal está vazio, simplificação ignorada.")
+        if paragrafo and paragrafo.string:
+            paragrafo.string = get_simplified_text_from_ai(paragrafo.string)
+            print("Módulo: Texto simplificado (IA) ativado.")
 
-    # 2. BARRA DE PROGRESSO (TDAH / Orientação)
+    # 2. BARRA DE PROGRESSO (TDAH)
     if config.get("barra_progresso"):
         body = soup.find('body')
         if body:
-            progress_bar_html = """
-            <div style="position: sticky; top: 0; width: 100%; height: 8px; background-color: #ddd; z-index: 1000;" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                <div style="width: 33%; height: 100%; background-color: #4CAF50; transition: width 0.3s;"></div>
-            </div>
-            """
-            progress_bar_soup = BeautifulSoup(progress_bar_html, 'html.parser').find('div')
-            body.insert(0, progress_bar_soup)
+            progress_bar = BeautifulSoup("""<div style="position: sticky; top: 0; width: 100%; height: 8px; background-color: #ddd; z-index: 1000;" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><div style="width: 33%; height: 100%; background-color: #4CAF50; transition: width 0.3s;"></div></div>""", 'html.parser')
+            body.insert(0, progress_bar)
             print("Módulo: Barra de progresso adicionada.")
-
-                # CÓDIGO JAVASCRIPT QUE FAZ A BARRA ANDAR
-            script_js = """
-            <script>
-                (function() {
-                    const progressBar = document.getElementById('a11y-progress-bar');
-                    const progressContainer = document.getElementById('a11y-progress-container');
-                    if (!progressBar || !progressContainer) return;
-
-                    function updateProgressBar() {
-                        // Calcula a altura total do documento menos a altura visível (viewport)
-                        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                        // Calcula o quanto o usuário já rolou
-                        const scrolled = window.scrollY;
-                        // Calcula a porcentagem
-                        const percentage = (scrolled / scrollHeight) * 100;
-
-                        // Aplica ao CSS da barra
-                        progressBar.style.width = percentage + '%';
-                        progressContainer.setAttribute('aria-valuenow', Math.round(percentage));
-                    }
-
-                    // Adiciona o listener para atualizar a barra sempre que a página rolar
-                    window.addEventListener('scroll', updateProgressBar);
-                    // Chama uma vez para exibir a barra na posição correta ao carregar
-                    updateProgressBar();
-                })();
-            </script>
-            """
-            # Injeta o script no final do body para não bloquear o carregamento
-            script_soup = BeautifulSoup(script_js, 'html.parser')
-            body.append(script_soup)
-            print("Módulo: Script de rolagem injetado.")
         
-    # 3. ESTILOS DE FOCO E ANIMAÇÃO
+    # 3. ESTILOS DE FOCO E SENSIBILIDADE
     css_estilos = ""
     if config.get("destaque_botoes"):
         css_estilos += ".btn { box-shadow: 0 0 10px rgba(0, 255, 255, 0.8) !important; font-weight: bold !important; }"
         print("Módulo: Destaque de botões ativado.")
         
-    if config.get("diminuir_espacamento"):
-        # Diminui espaçamento (para alguns disléxicos)
-        css_estilos += "body { letter-spacing: normal !important; line-height: 1.2 !important; }"
-        print("Módulo: Espaçamento de linha diminuído.")
-
-    if config.get("desativar_animacoes"):
-        # NOVA CORREÇÃO PARA HIPERSENSIBILIDADE VISUAL DE FOCO (TDAH)
-        css_estilos += """
-            *, ::before, ::after {
-                transition-property: none !important;
-                animation: none !important;
-            }
-        """
-        print("Módulo: Desativação de Animações (Foco) ativado.")
-
+    if config.get("cores_neutras"):
+        css_estilos += ".btn-primary { background-color: #000080 !important; } .btn-primary, .btn-success { filter: grayscale(0.2); }"
+        print("Módulo: Cores neutras ativadas.")
 
     if css_estilos:
         soup = modulo_aplicar_estilos_base(soup, css_estilos)
@@ -249,7 +181,7 @@ def aplicar_perfil_cognitivo(soup, config):
 # --- FUNÇÕES DE MÍDIA ADICIONAIS ---
 
 def aplicar_perfil_narracao_cegos(soup):
-    """PERFIL NARRAÇÃO: Audiodescrição (Gera a descrição visual do vídeo)."""
+    # ... (Manter a função de narração de vídeo aqui, ela é um módulo único de IA)
     print("--- PERFIL NARRAÇÃO (AUDIODESCRIÇÃO) ---")
     soup = aplicar_correcoes_base(soup)
     for video_tag in soup.find_all('video'):
@@ -270,7 +202,6 @@ def aplicar_perfil_narracao_cegos(soup):
 ####################################################
 ### SEÇÃO 3: FUNÇÕES DE IA (O "CÉREBRO")
 ####################################################
-
 
 def get_alt_text_from_ai(image_url):
     try:
@@ -366,6 +297,7 @@ def get_visual_description_from_ai(video_url):
                 Forneça APENAS a descrição."""
     return get_video_ai_response(video_url, prompt)
 
+
 ####################################################
 ### SEÇÃO 4: O SERVIDOR FLASK
 ####################################################
@@ -396,16 +328,18 @@ def handle_adaptation():
     try:
         # Chama a função de perfil apropriada
         if perfil == "visual":
+            # Passa o objeto config (que pode ter 'aumentar_escala', 'daltonismo_tipo', etc)
             soup_corrigido = aplicar_perfil_visual(soup, config)
         elif perfil == "auditivo":
             soup_corrigido = aplicar_perfil_auditivo(soup, config)
         elif perfil == "cognitivo":
             soup_corrigido = aplicar_perfil_cognitivo(soup, config)
         elif perfil == "narracao_cegos":
+            # Narração não precisa de config adicional, mas a recebe.
             soup_corrigido = aplicar_perfil_narracao_cegos(soup)
         elif perfil == "alto_contraste":
-            # Perfil de Alto Contraste de Emergência (Chama o visual com todas as opções ativadas)
-            config_alto_contraste = {"aumentar_escala": True, "daltonismo_tipo": "alto_contraste_simples", "sensibilidade_luz": True, "cegueira_total": True}
+            # Criamos um perfil de alto contraste de emergência (não modular)
+            config_alto_contraste = {"aumentar_escala": True, "daltonismo_tipo": "alto_contraste_simples", "sensibilidade_luz": True}
             soup_corrigido = aplicar_perfil_visual(soup, config_alto_contraste)
         else:
             return jsonify({"erro": f"Perfil '{perfil}' desconhecido"}), 400
