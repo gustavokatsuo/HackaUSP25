@@ -94,42 +94,66 @@ def aplicar_perfil_dislexia(soup):
     return soup
 
 def aplicar_perfil_alto_contraste(soup):
-    print("Aplicando Perfil Alto Contraste...")
+    """Aplica um CSS de Alto Contraste (Modo Escuro) melhorado e corrigido."""
+    print("Aplicando Perfil Alto Contraste (Versão 2.0)...")
+    
     soup = aplicar_correcoes_base(soup)
     
     head = soup.find('head')
     if head:
         new_style = soup.new_tag('style')
+        
+        # --- NOVO CSS DE ALTO CONTRASTE ---
         new_style.string = """
+        /* Fundo principal e cor de texto base (Branco no Preto) */
         body, .container, .card, .modal-content, .modal-body { 
             background-color: #000 !important; 
             color: #FFF !important; 
         }
+        
+        /* Áreas de navegação/rodapé um pouco mais claras */
         .navbar, footer, .modal-header, .modal-footer {
             background-color: #111 !important;
         }
-        .border-bottom, .border-top {
-            border-color: #444 !important;
+        
+        /* Títulos: Agora brancos, confiando no tamanho para hierarquia */
+        h1, h2, h5, .modal-title {
+             color: #FFF !important; 
         }
+
+        /* Links: Amarelo brilhante. Este é o nosso novo destaque principal. */
+        a, .nav-link {
+            color: #FFFF00 !important; /* Amarelo Brilhante para todos os links */
+            text-decoration: underline !important; /* Sublinhado para clareza extra */
+        }
+
+        /* Botões: Alto contraste (Branco no Preto) */
         .btn-primary, .btn-success, .btn {
             background-color: #FFF !important;
             color: #000 !important;
             border: 2px solid #FFF !important;
         }
-        h1, h2, h5, .modal-title {
-             color: #FFFF00 !important; /* Amarelo para títulos */
-        }
-        a, .nav-link {
-            color: #00FFFF !important; /* Ciano brilhante para links */
-        }
+        
+        /* --- A CORREÇÃO DO BUG DO INPUT --- */
         input, textarea {
-            background-color: #222 !important;
-            color: #FFF !important;
+            background-color: #222 !important; /* Fundo escuro */
+            color: #FFF !important; /* Texto digitado (branco) */
             border-color: #FFF !important;
+        }
+        
+        /* Corrigindo o placeholder invisível */
+        input::placeholder, textarea::placeholder {
+            color: #BBB !important; /* Cinza claro para o placeholder */
+            opacity: 1 !important;
+        }
+
+        /* Bordas */
+        .border-bottom, .border-top {
+            border-color: #444 !important;
         }
         """
         head.append(new_style)
-        print("Corrigido (Alto Contraste): CSS de Alto Contraste injetado.")
+        print("Corrigido (Alto Contraste): CSS v2.0 injetado.")
         
     return soup
 
