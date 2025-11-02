@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>InovaTech - O Pesadelo Visual</title>
+    
+    <style>
+        /* ERRO CRÍTICO 1: REMOVE O FOCO DO TECLADO */
+        *:focus {
+            outline: none !important; 
+        }
+
+        /* PROBLEMA 2: BAIXO CONTRASTE E CORES CHOCANTES */
+        body {
+            background-color: #A9A9A9; /* Fundo Cinza Médio */
+            color: #008080; /* Texto Teal (difícil de ler) */
+            font-family: serif;
+            font-size: 8pt; /* FONTE MINÚSCULA */
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #FFD700; /* Títulos em Ouro (brilhante e vibrante) */
+            border-bottom: 1px solid #FF4500;
+        }
+        /* PROBLEMA 3: BOTÕES HORRÍVEIS E DE BAIXO CONTRASTE */
+        .btn-acao {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFFF00; /* Botão Amarelo Vibrante */
+            color: #0000FF; /* Texto Azul Chocante no Amarelo (Baixíssimo Contraste) */
+            border: 1px solid #FF0000;
+            cursor: pointer;
+            font-size: 9pt;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .card {
+            background-color: #2F4F4F; /* Fundo Cinza Escuro */
+            color: #FFFFE0; /* Texto Amarelo Pálido (Contraste ruim em áreas grandes) */
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0;
+            box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5); /* Sombra pesada */
+        }
+        
+    </style>
+  </head>
+  
+  <body>
+    <header style="background-color: #8B0000; color: white; padding: 10px; margin-bottom: 30px;">
+        <h1 style="margin: 0;">InovaTech - [ALERTA VISUAL]</h1>
+    </header>
+
+    <div id="content-container" style="max-width: 900px; margin: auto;">
+
+        <h2>Soluções de Gerenciamento</h2>
+        <p>
+            Nossas soluções de software são projetadas para gerenciar e otimizar processos internos. Acreditamos que a tecnologia deve ser complexa e demandar alto esforço cognitivo para justificar o investimento.
+        </p>
+
+        <div style="margin-top: 30px;">
+             <!-- ERRO: USANDO DIV COMO BOTÃO COM ONCLICK -->
+            <div class="btn-acao" onclick="console.log('Botão Acionado!')">
+                Veja Nossas Políticas
+            </div>
+        </div>
+
+        <section id="produtos">
+            <h2 style="margin-top: 40px;">Produtos Chocantes</h2>
+            
+            <div class="card">
+                <!-- ERRO: SEM ALT-TEXT E IMAGEM MINÚSCULA -->
+                <img src="https://placehold.co/150x100/FF0000/FFFFFF?text=FALHA" style="float: left; margin-right: 15px; border: 2px solid #FFD700;" width="150" height="100">
+                <h3 style="color: white; font-size: 10pt;">Alpha: Gerenciamento de Crises</h3>
+                <p>
+                    Este módulo exige atenção constante devido à sua interface dinâmica e cores instáveis. Foi desenhado para testar a sua resistência ao estímulo visual.
+                </p>
+                <a href="#" class="btn-acao">Comprar Agora</a>
+                <div style="clear: both;"></div>
+            </div>
+
+            <div class="card">
+                <img src="https://placehold.co/150x100/0000FF/FFFFFF?text=DADO" style="float: left; margin-right: 15px; border: 2px solid #FFD700;" width="150" height="100">
+                <h3 style="color: white; font-size: 10pt;">Beta: Análise de Dados</h3>
+                <p>
+                    Os gráficos usam tons de verde e vermelho claro, deliberadamente escolhidos para confundir usuários com daltonismo. A fonte é pequena.
+                </p>
+                <a href="#" class="btn-acao">Ver Demo</a>
+                <div style="clear: both;"></div>
+            </div>
+        </section>
+
+        <section id="video-demo" style="margin-top: 50px;">
+            <h2 style="margin-top: 40px;">Vídeo de Demonstração</h2>
+            <p>Um vídeo sem legendas.</p>
+            <div style="width: 100%; max-width: 600px; margin: auto;">
+                 <!-- ERRO: VÍDEO SEM LEGENDAS -->
+                <video controls width="100%">
+                    <source src="https://videos.pexels.com/video-files/3209828/3209828-sd_640_360_25fps.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+        </section>
+
+        <section id="contato" style="margin-top: 50px;">
+            <h2 style="margin-top: 40px;">Fale Conosco</h2>
+            
+            <form>
+                <div style="margin-bottom: 15px;">
+                    <!-- ERRO: SEM LABEL E INPUT MINÚSCULO -->
+                    <input type="text" name="nome" placeholder="Nome Completo" style="padding: 5px; font-size: 8pt; width: 300px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <!-- ERRO: SEM LABEL -->
+                    <input type="email" name="email" placeholder="Email (Obrigatório)" style="padding: 5px; font-size: 8pt; width: 300px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <!-- ERRO: SEM LABEL -->
+                    <textarea name="mensagem" placeholder="Sua Mensagem..." rows="3" style="padding: 5px; font-size: 8pt; width: 100%;"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="btn-acao">Enviar Formulário</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <footer style="margin-top: 80px; text-align: center; font-size: 7pt; color: #FF4500;">
+        &copy; 2025 InovaTech. Direitos Reservados.
+    </footer>
+
+    <!-- Adiciona o script de alerta para o botão div -->
+    <script>
+        document.querySelector('.btn-acao').onclick = function() {
+            // Se fosse um site real, esta div não faria nada para leitores de tela
+            console.log('Botão acionado via DIV!');
+        };
+    </script>
+  </body>
+</html>

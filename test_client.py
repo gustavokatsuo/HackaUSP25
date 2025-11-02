@@ -83,7 +83,7 @@ def main():
             "id": "cognitivo", 
             "config": {
                 "simplificar_texto": True,
-                "barra_progresso": True,
+                "aumentar_escala": "moderada",
                 "destaque_botoes": True,
                 "diminuir_espacamento": True
             }
