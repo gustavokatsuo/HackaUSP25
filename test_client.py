@@ -3,10 +3,8 @@ import json
 import os
 import time
 
-# --- CONFIGURAÇÃO DE ACESSO ---
 URL_SERVIDOR = "http://127.0.0.1:5000/adaptar"
 ARQUIVO_QUEBRADO = 'antes.html'
-# -----------------------------
 
 def rodar_teste(perfil_nome, perfil_id, config_data):
     """Função principal para enviar requisições ao servidor."""

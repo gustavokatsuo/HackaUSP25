@@ -13,6 +13,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 
 app = Flask(__name__)
+
 # Habilita CORS para permitir a comunicação com o front-end
 CORS(app)
 
@@ -94,7 +95,7 @@ def aplicar_perfil_visual(soup, config):
     
     # A. Aumentar Escala (Baixa Visão) - Ajustado para ser visível
     escala = config.get("aumentar_escala")
-    ESCALAS = {"leve": "135%", "moderada": "160%", "severa": "190%"}
+    ESCALAS = {"leve": "150%", "moderada": "200%", "severa": "250%"}
     if escala in ESCALAS:
         tamanho_escala = ESCALAS[escala]
         # Aplica o aumento na fonte raiz para escalar tudo
@@ -104,7 +105,6 @@ def aplicar_perfil_visual(soup, config):
     # B. Ajustes de Cores (Daltonismo ou Hipersensibilidade)
     daltonismo_tipo = config.get("daltonismo_tipo")
     
-    # --- CORREÇÃO SOLICITADA: NEUTRALIZAÇÃO EXTREMA DE CORES/BRILHO ---
     if config.get("hipersensibilidade_visual"):
         # 1. Neutralização do Fundo e Cores (Filtro Monocromático de Baixa Luminosidade)
         new_styles += """
@@ -192,8 +192,16 @@ def aplicar_perfil_cognitivo(soup, config):
     PERFIL COGNITIVO (Configuração Modular)
     Implementa: Simplificação de Texto (Dislexia), Barra de Progresso (TDAH) e Estilos de Foco.
     """
-
-    # 1. SIMPLIFICAÇÃO DE TEXTO (Dislexia)
+    print("--- INICIANDO PERFIL COGNITIVO (MODULAR) ---")
+    soup = aplicar_correcoes_base(soup)
+    head = soup.find('head')
+    if not head: return soup
+    
+    # 1. MÓDULOS DE ESCALA (NOVO AQUI!)
+    ESCALAS = {"leve": "150%", "moderada": "175%", "severa": "200%"}
+    escala = config.get("aumentar_escala")
+    
+    # 2. SIMPLIFICAÇÃO DE TEXTO (IA)
     if config.get("simplificar_texto"):
         hero_section = soup.find('div', class_='col-lg-6')
         if hero_section:
@@ -205,36 +213,42 @@ def aplicar_perfil_cognitivo(soup, config):
                     lead_paragraph.string = simplified_text
                     print("Módulo: Simplificação de Texto (Dislexia) aplicado.")
                     
-        # Injeta CSS de espaçamento/fonte para Dislexia
-        new_styles = "p, h1, h2, h3, li { line-height: 1.6 !important; letter-spacing: 0.1em; font-family: sans-serif !important; }"
-        soup = modulo_aplicar_estilos_base(soup, new_styles)
+    # 3. ESTILOS GERAIS
+    css_estilos = ""
+
+    # A. Adiciona a escala se solicitada
+    if escala in ESCALAS:
+        tamanho_escala = ESCALAS[escala]
+        css_estilos += f"html {{ font-size: {tamanho_escala} !important; }}"
+        print(f"Módulo: Escala (Cognitivo) aplicado em {tamanho_escala}.")
+    
+    # B. Outros estilos cognitivos
+    if config.get("destaque_botoes"):
+        css_estilos += "button, .btn { border: 10px solid red !important; box-shadow: 0 0 15px red !important; }"
+        print("Módulo: Destaque de Botões aplicado.")
+        
+    if config.get("diminuir_espacamento"):
+        css_estilos += "body { letter-spacing: normal !important; line-height: 1.2 !important; }"
+        print("Módulo: Espaçamento de linha diminuído.")
+
+    if css_estilos:
+        soup = modulo_aplicar_estilos_base(soup, css_estilos)
 
 
-    # 2. BARRA DE PROGRESSO (TDAH / Orientação) - CORREÇÃO FINAL
+    # 4. BARRA DE PROGRESSO (TDAH) - Lógica de injeção HTML
     if config.get("barra_progresso"):
         body = soup.find('body')
         if body:
-            # HTML da Barra (Estático) - Sem JS para evitar quebras.
             progress_bar_html = """
             <div style="position: sticky; top: 0; width: 100%; height: 8px; background-color: #ddd; z-index: 1000;" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
                 <div style="width: 33%; height: 100%; background-color: #4CAF50;"></div>
             </div>
             """
-            
-            # Injeção no TOPO do BODY
             progress_bar_soup = BeautifulSoup(progress_bar_html, 'html.parser').find('div')
             body.insert(0, progress_bar_soup)
-            
             print("Módulo: Barra de progresso estática adicionada.")
 
-    # 3. DESTAQUE DE BOTÕES (Hipersensibilidade Sensorial / Foco)
-    if config.get("destaque_botoes"):
-        new_styles = "button, .btn { border: 3px solid red !important; box-shadow: 0 0 10px red !important; }"
-        soup = modulo_aplicar_estilos_base(soup, new_styles)
-        print("Módulo: Destaque de Botões aplicado.")
-
     return soup
-
 
 ####################################################
 ### SEÇÃO 3: ROTEAMENTO PRINCIPAL (O ENDPOINT /adaptar)
@@ -254,7 +268,6 @@ def handle_adaptation():
         if not html_quebrado:
              return jsonify({"erro": "Faltando 'html_content' no payload (Verifique Finished.html)."}), 400
 
-        # Aplica a correção de segurança (remove o outline: none)
         soup = BeautifulSoup(html_quebrado, 'html.parser') 
         soup = aplicar_correcoes_base(soup)
         

@@ -113,7 +113,7 @@ def main():
     # Executa cada teste no dicionário
     for teste in TESTES:
         rodar_teste(teste["nome"], teste["id"], teste["config"])
-        time.sleep(1) # Pequena pausa entre testes de configuração leve
+        time.sleep(1)
 
 
 if __name__ == "__main__":

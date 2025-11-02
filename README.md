@@ -73,7 +73,7 @@ python3 test_client.py
 * O script irá chamar o servidor e gerar um arquivo `resultado_do_servidor_cego.html`.
 * Para testar outros perfis, edite a variável `PERFIL_PARA_TESTAR` no topo do `test_client.py` e rode-o novamente.
 
-## 5. Próximos Passos (Modelo de Negócio - Peso 1)
+## 5. Próximos Passos (Modelo de Negócio)
 * **Parte 1:** Construir a "Parte 1" (formulário) que consome esta API.
 * **Modelo B2C:** Uma extensão Freemium (ex: 3 perfis grátis, todos por R$ 5/mês).
 * **Modelo B2B:** Um serviço de assinatura para empresas (um "selo A11y-Adapt") que adapta o site da empresa *antes* de enviá-lo ao usuário, garantindo conformidade com a lei de acessibilidade.
@@ -82,10 +82,7 @@ python3 test_client.py
 * `app.py`: O servidor Flask (O Cérebro de IA / Nosso Protótipo).
 * `test_client.py`: O script que simula a extensão do navegador (Nosso Testador).
 * `antes.html`: O site "quebrado" que usamos como alvo.
-* `index.html`: O site "correto", com acessibilidade manual.
+* `normal.html`: O site "correto", com acessibilidade manual.
 * `captions.vtt`: O arquivo de legendas do `index.html`.
 * `requirements.txt`: As dependências do Python.
 * `.gitignore`: Protege nossa `venv` e chaves de API.
-
-
-adicionei o testa-tudo.py (autoexplicativo) obs: cansado

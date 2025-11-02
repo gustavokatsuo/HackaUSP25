@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="../styles/Condition.css">
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const condition = params.get('condition') || 'visual';
+        let condition_plural = "";
+
+        switch(condition){
+            case "visual":
+                condition_plural = "visuais";
+                break;
+            case "auditivo":
+                condition_plural = "auditivas";
+                break;
+            case "cognitiva":
+                condition_plural = "coginitivas";
+                break;
+            default:
+                condition_plural = "visuais";
+                break;
+        }
+
+        document.title = "Condições " + condition_plural;
+    </script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wrapper">
+
+        <p class="texto-acima">
+            texto para áudio
+            <button type="button" id="botaoAudio" class="botao-icone-style menos-importante">
+                <span class="material-icons" style="vertical-align: middle;">
+                    volume_up
+                </span>
+            </button>
+        </p>
+
+        <div class="form-container">
+            <h1 id="title-h1"></h1>
+
+            <p id="condition-question"></p>
+
+            <script>
+                document.getElementById("title-h1").textContent = "Condições " + condition_plural;
+                document.getElementById("condition-question").textContent = "Você possui uma ou mais condições " + condition_plural + "?";
+            </script>
+
+            <form id="meuFormulario">
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="condition-question-inp" value="sim">
+                        Sim
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="condition-question-inp" value="nao">
+                        Não
+                    </label>
+                </div>
+
+                <button type="button" onclick="irParaProximaPagina()">Próximo</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function irParaProximaPagina() {
+            const radioSelecionado = document.querySelector('input[name="condition-question-inp"]:checked');
+            if(radioSelecionado){
+                const valor = radioSelecionado.value;
+                let url = ""
+                console.log(valor);
+                if(valor == "sim") {
+                    url = '../SubConditions/sub-' + condition + '.html';
+                }else{
+                    switch(condition) {
+                        case "visual":
+                            url = 'Condition.html?condition=auditivo';
+                            break;
+                        case "auditivo":
+                            url = 'Condition.html?condition=cognitiva';
+                            break;
+                        case "cognitiva":
+                            url = 'Finished.html';
+                            break;
+                    }
+                }
+                window.location.href = url;
+            }
+        }
+    </script>
+</body>
+</html>

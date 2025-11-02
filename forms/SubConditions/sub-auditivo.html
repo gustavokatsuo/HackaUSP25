@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condições Auditivas</title>
+    <link rel="stylesheet" href="../styles/Condition.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wrapper">
+
+        <p class="texto-acima">
+            texto para áudio
+            <button type="button" id="botaoAudio" class="botao-icone-style menos-importante">
+                <span class="material-icons" style="vertical-align: middle;">
+                    volume_up
+                </span>
+            </button>
+        </p>
+
+        <div class="form-container">
+            <h1>Condições auditivas</h1>
+
+            <p id="condition-question">Qual condições visuais?</p>
+
+            <form id="meuFormulario">
+                <div class="radio-group">                  
+                    <label class="radio-option">
+                        <input type="checkbox" name="condicao_audicao[]" value="audicao" id="chkAudicao" />
+                        Baixa audição
+                        
+                        <select name="tipo_audicao" id="select-audicao" class="hidden-select">
+                            <option value="leve">Forma leve</option>
+                            <option value="moderada"> Forma moderada</option>
+                            <option value="grave">Forma grave</option>
+                        </select>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="checkbox" name="condicao_vaudicao_total[]" value="surdez_total">
+                        Surdez total
+                    </label>
+
+                <script>
+                    const params = new URLSearchParams(window.location.search);
+                    const condition = params.get('condition') || 'condições visuais';
+
+                    document
+                    .querySelectorAll(".radio-group input[type='checkbox']")
+                    .forEach(checkbox => {
+                    });
+                </script>
+
+                <button type="button" onclick="irParaProximaPagina()" style="width:100%">Próximo</button>
+            </form>
+        </div>
+    </div> 
+
+    <script>
+        const chkAudicao = document.getElementById('chkAudicao');
+
+        const selectAudicao = document.getElementById('select-audicao')
+
+        chkAudicao.addEventListener('change', function() {
+            if (this.checked) {
+                selectAudicao.style.display = 'inline-block';
+            } else {
+                selectAudicao.style.display = 'none';
+            }
+        });
+
+        function irParaProximaPagina() {
+            const form = document.getElementById('meuFormulario');
+            const formData = new FormData(form); // pega todos os valores do formulário
+
+            // Para armazenar os valores de forma legível
+            const dados = {};
+
+            // FormData retorna pares chave/valor
+            for (let [key, value] of formData.entries()) {
+                // Se a chave já existir, transforma em array
+                if (dados[key]) {
+                    if (Array.isArray(dados[key])) {
+                        dados[key].push(value);
+                    } else {
+                        dados[key] = [dados[key], value];
+                    }
+                } else {
+                    dados[key] = value;
+                }
+            }
+
+            console.log(dados); // Aqui você vê todos os valores no console
+            localStorage.setItem('formularioAuditivo', JSON.stringify(dados));
+
+            // Se quiser passar os dados para a próxima página via URL:
+            const queryString = new URLSearchParams(dados).toString();
+            window.location.href = '../Templates/Condition.html?/condition=cognitiva';
+        }
+
+
+    </script>
+</body>
+</html>
